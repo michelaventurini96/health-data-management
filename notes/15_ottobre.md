@@ -1,0 +1,1 @@
+Nothing much, just SQL exercises. Just read the slides on Moodle.
