@@ -32,4 +32,95 @@ Biosignals are extremely linked to how it is acquired: there is an analogic sign
 
 Signals are saved as arrays (1 dimension per channel, time is implicit, knowing the sampling frequency). A whole record can include many channels, and hase a lot of metadata (type of record, additional annotations, patient data, technician, time, etc).
 
-Images can be 2D or 3D. Radiographies, PET, SPECT, NRM, CT, whatever. Quantization and sampling becomes pixels.
+Images can be 2D or 3D. Radiographies, PET, SPECT, NRM, CT, whatever. Quantization and sampling becomes pixels. Quantization is represented by color levels (16M colors (32bit) 256 greyscale (8 bit), 2 b/w (1 bit))
+
+There is a safe standard for bioimage representation: [DICOM (Digital Imaging and Communication in Medicine)](http://medical.nema.org) , a *de facto* standard, that defines a series of labels for metadata, and allows for a correct representation. There is [a python library to work with DICOM files](https://pydicom.github.io/pydicom/stable/getting_started.html).  There are, sadly, different DICOM dialects, that reduces interoperability: DICOM viewers could not open a specific DICOM file.
+
+### PACS
+
+#### Picture Archiving and Communication System
+
+Centralized repository for ALL bioimagery in an hospital, from all sources. It permits visualization and extraction of images in EPR. They are usually *ad hoc* solutions, expensive, interfaced with the hospital information system. It implements DICOM viewers, but the main aim is storage. 
+
+DICOM is not just the image, but also "communication", that includes all the messages used to exchange images between the imaging system and the PACS. 
+
+### biorecordings
+
+Video recordings, includes a time variant. They come from ecography, angiography, etc. They are just a sequence of images. All the images could be memorized (ecocardiography, endoscopy) or just few screenshots could be acquired (angiography), in the last case time is not uniformly varied, and can be treated as bioimages.
+
+For both images and recordings, DICOM provides a compression algorithm. 
+
+# Text documents
+
+Beyond the concept of medical data, we have to consider **medical documents**. It includes the plain text, but has to include a lot of metadata.  
+
+* Biomedical data:
+  * Value (raw data)
+  * How it was created
+  * Environment of creation
+  * Who is responsibile of creation
+  * Who is te owner (patient)
+  * Why was it created
+  * Reference values at the moment of recording
+* Biomedical document
+  * Heading
+  * Who is it written for
+  * Text
+  * Signature of responsibile person
+  * Authentication
+
+Different parts for different aims.
+
+#### heading
+
+Who is competent for the data, and is emitting the document. There are lists ("Albi") of real intestations, like lists of hospitals in Regione, list of firms in Camera di Commercio, etc.
+
+Both the hospital and the Reparto are included (including director of Reparto, and contacts.). It states implicitly where the original document is preserved.
+
+#### destination
+
+Usually the person whom the document is written for is the **patient**, even if it is effectively used by other people/specialists/clinicians. 
+
+#### content
+
+Usually it's plain text, stating/declaring things. There is a ID number, that allows other specialists to access remotely the original content.
+
+Special content: **scheda di dimissione ospedaliera (SDO)**: it is given to the patient leaving the hospital, when the patient is admitted, even for day hospital. It includes everything but the information on drugs: clinical aspects, diagnostics, symptoms, surgeries, diagnostic/therapeutic processes, prosthetics; Operative Units visited, internal transfers, dismission date, etc. Usually not aimed to the patient, but created for administrative purposes and rendicontation. 
+
+#### signature
+
+The signature of the medic/technician who generated the statement. There could be a stamp too, and the writing "Copia conforme all'originale", because the original version is digital, and never given away. The signature itself is not sufficient...
+
+#### authentication
+
+Signatures needs to be authenticated: usually a Notaio, Segretario Comunale, public officier or generic witness is needed. There are digital authentication algorithms used to validated the signature (electronic signature).
+
+
+
+## Electronic signature and CAD (Codice dell'amministrazione digitale)
+
+10 years old, it states he juridic validity of digital document. Documents must be signed:
+
+* electronic signature (name and last name, scan of ID card, etc)
+* advanced electronic signature (tablet signature in a bank)
+* qualified electronic signature (advanced, + a qualified certificate, created on a secure device)
+* digital signature (based on a set of public/private cryptographic keys, that encrypts the document)
+
+All documents signed with the last three are considered valid. Copies are considered "conformi" where not otherwise explicitly specified. A username/password system is a type of advanced electronic signature, because the password was given while identifying the person. A password sent by SMS or a 2 factor authentication is fine, because your phone number is certified to be owned by you.
+
+DICOM metadata includes tens of fields, about image, machinery, patient, acquisition parameters, etc. There are few fields `SOPClassUID`, `SOPInstanceUID` used to communicate with pertinent PACS. 
+
+### document text structuring
+
+The text of the document could be plain, or structured in a table. The latter option can force information insertion, and can be helpful to compress data. It helps comprehension from more professionals, it can be indexed and searched, it allows information reuse, it can help with semantical contextualization of informations, and allows comparation between different documents.
+
+Unstructured text can be written in non-standard language, but can be structured by NLP techniques. It improves comprehension and add flexibility.
+
+To solve the issue of unstructured text, a standard was created.
+
+# HL7
+
+HL7 is a clinical document architecture (CDA). Inside HL7, free text still remain a gold standard, in certain portions of it. A structured document converts the plain text in a tree-organized data structure with many fields (patient history, etc.) with some subsection (presenting complains, significant diseases, traumatic injuries) leading to a serie of coded concept ([C1384666] Hearing impairment, etc). The [C1384666] is a SNOMED(?) code, standardized. 
+
+A serie of techniques of NLP has beed deployed to automatically structure text. [Example](http://linguistic-annotation-tool.italianlp.it/).  Few basics of NLP were given.  In some case studies, NLP algorithms performed much better to extract information from unstructured EHR compared from querying structured EHR.
+
