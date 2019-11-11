@@ -118,6 +118,21 @@ Unstructured text can be written in non-standard language, but can be structured
 
 To solve the issue of unstructured text, a standard was created.
 
+# natural language processing
+
+* named entry recognition
+* semantic role recognition
+* entity relation recognition
+* timex and time line recognition
+* word sense disambiguation
+* negation detection identification
+
+a **knowledge model** is a kind of database. It includes the main concept of the problem (type of materials, effects, other factors) and their relationship, and some entity that can read the text (Comparators, indexes, values...). With Watson, corpora semantics are annotated by hand, semi-supervised.
+
+Performance is measured by train-test sets evaluateion of precision and recall. Search is performed with the help of the comparator.
+
+
+
 # HL7
 
 HL7 is a clinical document architecture (CDA). Inside HL7, free text still remain a gold standard, in certain portions of it. A structured document converts the plain text in a tree-organized data structure with many fields (patient history, etc.) with some subsection (presenting complains, significant diseases, traumatic injuries) leading to a serie of coded concept ([C1384666] Hearing impairment, etc). The [C1384666] is a SNOMED(?) code, standardized. 
