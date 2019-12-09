@@ -131,3 +131,103 @@ Relations are semantic, between a couple of Atoms, with single or complex mappin
 Different semantic types can create **semantic networks** of terms linked by semantic similarity between the categories. After UMLS thesaurus relations, a Term inherits the semantic relations from its semantic categories. In this way UMLS becomes an **ontology**.
 
 e.g. "..is used to cure.."
+
+
+
+
+
+# Health Informatics Standards
+
+It's not just about trading information, but about working together in synergy. It's a historical reason: structures were built without any coordinative effort.  Interoperability means having standards, mostly. You will need:
+
+* Tecnological standards
+* Communication standards (structural standards)
+* Common terminologies and ontologies (semantic standards: medical dictionaries)
+* Processes  (organizational standards)
+* Frameworks and agreements (governance standards)
+* International legislation
+
+We'll new see the first two levels. 
+
+## Health Information Exchange (HIE)
+
+According to healthit.gov: "[*HIE allows doctors, nurses, pharmacists and other health care providers and patients to appropriately access and securely share a patient's vital medical information electronically - improving the speed, quality, safety and cost of patient care*](https://www.healthit.gov/sites/default/files/ONC10yearInteroperabilityConceptPaper.pdf)".
+
+![1575304661828](/home/andrea/.config/Typora/typora-user-images/1575304661828.png)
+
+Apple and other portable device producers adhere to this kind of standards. How is a standard made? 
+
++ **ad hoc method**: a group of people choose the most used method, and elevates it as standard (e.g. DICOM) by declaring its specification. When a lot of people start using it, it becomes a standard.
++ **de facto method** : a single stakeholder controls a big enough portion of the market (e.g. Microsoft Windows)
++ **government mandate method**: a goverment agency creates a standard and legislates its use (e.g. HCFA's UB92 insurance claim form)
++ **consensus method**: a group of volunteers representing all stakeholders work in an open process to create a standard (e.g. HL7 health level 7 standard for clinical data interchange)
+
+The development process of a standard has some phases:
+
+Identification $$\rightarrow$$ Conceptualization $$\rightarrow$$ Discussion $$\rightarrow$$ Drafting $$ \rightarrow $$ Revision $$\rightarrow$$ Implementation
+
+Standards are not laws!! In some cases, they can *become* laws, but most often then not they are just accepted and implemented by market selection (e.g. Bluetooth). Conformity to the standard is a simple self-declared compliance, that can be **certified** by a neutral body, with a verification stage (with an audit). Certification agencies include TUV Sud, etc. 
+
+Standards usually guarantees :
+
+* **agreement**: made by consensus
+* **democracy**: all interested stakeholders can partecipate and make observations and suggestions
+* **transparency**: the process of creation is available to the public
+* **voluntary application** : norms are a reference that are voluntarily adopted
+
+### standardization agencies
+
+ISO (world), CEN (europe), UNI (Italy).   $$\rightarrow$$ UNI/EN/ISO , etc.
+For electric area: IEC (world), CENELEC (europe), CEI (Italy).
+For IT: W3C, OASIS, IETF, IEEE, OGF.... 
+
+Adoption in single countries require translation and acceptance. They can be separated, not necessarily propedeutically.
+
+For medical informatics, there is a special commission: CDISC, CEN Technical Commission 251, GS-1, **HL7** , etc. In Italy, there is UNINFO, member of UNI. The first US standard for transmission of medical data is from 1996 , named HIPAA (Health insurance portability and accountability act).
+
+# HL7
+
+Born in 1987, Health Level Seven International (HL7) is a non profit, ANSI-accreditated standards developing organization, dedicated to providing a comprehensive framework and related standards for the exchange, integration, sharing and retrieval of electronic health information.
+
+The 7 refers to the ISO-OSI information trasmission model, it defines the 7 levels at which digital data could be traded: 
+
+* bits
+* frames (MAC address, LLC)
+* packets (IP, networks)
+* segments (connections, reliability)
+* data (session)
+* data (presentation)
+* data (application)  $$\rightarrow$$  7th level, the only one ruled by HL7.
+
+In Italy there is HL7 Italy (Uni Genova). Current version of HL7 is 3.0. This is the version implemented in all regional health data systems. Given that interoperability processes doesn't create new systems, they have to take actual implementations of IT facilities and create a common interface that allows them to talk with each other. 
+
+There are 7 sections, 2 generals and 5 referring to particular domains (clinical and administrative domains, EHR profiles, rules and references, education and awareness).
+
+## HL7 v. 2 
+
+**Communication workflow: the data is exchanged between two entities as a message.** 
+
+* It is ASCII coded, delimited by separators.
+* Two actors (sender + receiver), communicate through the exchange of bi-directional messages
+* The message is validated by a parser before the transmission: first, the parser adds missing parts, then the message is transmitted
+* The receiver decodes the message according to the protocol rules and interpret data type, extracting all the relevant informations from the message
+* Messages are independent from the system implementation $$\rightarrow$$ heterogenous systems can communicate without knowing each other
+* The receiver always sends an acknowledgement (`ACK`) message to confirm the reception.
+
+The message starts with a trigger (e.g. you change the address of a patient in your local anagraphics). An HL7 message is sent. Upon reception, an HL7-ACK message is sent back and received. A message is an ASCII string, made of **segments**. A segment is delimited by a carriage-return (`HEX 0D`), divided in **fields**, delimited by | , and inside fields data or strings can be separated by ^, subcomponents by &, etc.
+
+Example: order places hl7 message:
+
+`MSH|^~\6|RIS|SIEMENS|SCREENING|DEDALUS|other metadata......<cr>` this is the header line: 
+`PID||59530^^^RIS|""|ROSSI^MARIA||19549191<cr>`
+`PV1||O||||||||||||||||SCR20131568`
+`ORC|SC|0000000000000034466^DEDALUS|434298347298374^RA2000||CM....`
+`OBR|||....`
+
+example: reply ACK
+
+`MSH|^~\&|RIS|SIEMENS|EUROSOFT|EU|1203192830918||ACK^001|MSGID12938019283019283|P|2.3.1<cr>`  header
+`MSA|AA|MSGID12938019283019283`
+
+MSA: id of the message, and code of acceptance: AA: application accept, AE: application error, AR: application reject.
+
