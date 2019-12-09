@@ -231,3 +231,41 @@ example: reply ACK
 
 MSA: id of the message, and code of acceptance: AA: application accept, AE: application error, AR: application reject.
 
+[missing part, until CDA templates]
+
+HL7 adds a RIM (Reference Information Model), that adds interoperability trying to represent info in a common way (Entity, Role, Act). A new method to represent documents is the Clinical Document Architecture (CDA). Instead of messages, documents are passed (with signature, legal implications) in XML format. They follow the **CDA MODEL**, derived from the RIM.
+
+CDA v2 is composed by Header and Body part, the latter divided in Structured and Unstructured parts. XML can be parsed with a CSS for a human-readable document. Different templates and/or implementations can be used to constrain the CDA specification, and to provide XML validating rules. CDA-2 relies on a SOAP architecture, for XML over HTTP.  
+
+# FHIR
+
+### Fast Healthcare Interoperability Resources
+
+Always based on RIM model. It's a standard describing health data format, and an API for exchanging EHRs. It's REST-based. CDA2 creates the documents, but FHIR allows different hospitals to share data. It is similar to CDA2, but a new implementation must be done.
+
+[FIHR structure standard example](https://www.hl7.org/fhir/condition.html)
+
+REST: REpresentational State Transfer. It's a style to build websites (not a protocol, not an architecture). RESTful services can pass informations over different protocols (99% HTTP). It makes resources available through an URI. 
+
+* Resources: elements containing informations
+* Request verbs (POST, GET, PUT, DELETE)
+* Request headers, additional instructions (type of response required, auths)
+* Request body
+* Response body (XML, JSON)
+* Response status code (200 = OK, 404 = not found)
+
+FHIR allows access to atomic informations to info with a RESTful API, while CDA2 is a whole document. FHIR allows interaction with data (CRUD), CDA2 is read-only. FHIR has a modular approach, without limitation on content, while CDA2 use a complex and very abstract model based on HL7 "clinical statement". Both are human readable, and based on HL7 v3.
+
+## HAPI-FHIR
+
+Hapi: API per FIHR data, a special kind of fileserver. [Example test server](https://fhirtest.uhn.ca/home?encoding=null&pretty=true) .  The Conformance Statement shows the available resources.  An additional layer between EHR and apps is [SMART on FHIR](smarthealthit.org), a token-based authentication framework between EHR and FHIR, and allows the app to work without knowing the FHIR server, adding a layer of security to the data. SMART is a common API for all EHRs firms and fileserver protocols and standards.
+
+
+
+# IHE
+
+Integrating the Healthcare Enterprises: initiative of EHR makers with the target of giving methods to implement HL7 and DICOM standards. IHE uses profiles. It's the description of a process, divided for many domains, and commissions and workgroup decide the relative profile, constituted by **actors** and **transactions** . Example: LTW (Laboratory Testing Workflow), that describes the flow of materials and information, and how information leverages HIS (Hospital Information System). In the example the Ward Information System is between the HIS and the laboratory. There is an Order Placer, an Order Filler, an Order Result Tracker, and an Automation Manager. Every communication is ruled by a transaction (LAB1, LAB2, etc.) and every transaction is an HL7 v2 message, pre-compiled by the IHE profile.
+
+## OpenEHR
+
+After EN 13606 and CEN14822, the model for a full EHR.
