@@ -269,3 +269,4 @@ Integrating the Healthcare Enterprises: initiative of EHR makers with the target
 ## OpenEHR
 
 After EN 13606 and CEN14822, the model for a full EHR.
+
